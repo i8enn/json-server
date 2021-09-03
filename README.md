@@ -296,6 +296,17 @@ GET /posts?_only=title,content,author.name
 
 > :warning: `_only` param have priority on `_exclude`. If you pass `_only=...,_exlcude=...` `_exclude` will be ignored.
 
+### Distinct list
+
+To get unique result by one field, add `_unique`
+
+```http request
+GET /posts?_uniqeu=post.tags
+```
+
+> :warning: `_unique` param working with only object properties (including nested) and whole arrays.
+> You won't be able to use something like `_unique=post.authors.0.jobs`.
+
 ### Database
 
 ```

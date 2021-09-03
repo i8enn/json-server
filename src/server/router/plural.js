@@ -75,6 +75,7 @@ module.exports = (db, name, opts) => {
     const _expand = req.query._expand
     const _exclude = req.query._exclude
     const _only = req.query._only
+    const _unique = req.query._unique
     delete req.query.q
     delete req.query._start
     delete req.query._end
@@ -246,6 +247,11 @@ module.exports = (db, name, opts) => {
       chain = chain.map(function (el) {
         return exclude(el, _fields)
       })
+    }
+
+    // Distinct
+    if (_unique) {
+      chain = chain.uniqBy(_unique)
     }
 
     res.locals.data = chain.value()
