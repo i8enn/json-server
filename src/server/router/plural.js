@@ -166,6 +166,11 @@ module.exports = (db, name, opts) => {
       }
     })
 
+    // Distinct
+    if (_unique) {
+      chain = chain.uniqBy(_unique)
+    }
+
     // Sort
     if (_sort) {
       const _sortSet = _sort.split(',')
@@ -247,11 +252,6 @@ module.exports = (db, name, opts) => {
       chain = chain.map(function (el) {
         return exclude(el, _fields)
       })
-    }
-
-    // Distinct
-    if (_unique) {
-      chain = chain.uniqBy(_unique)
     }
 
     res.locals.data = chain.value()
