@@ -7,7 +7,6 @@ const enableDestroy = require('server-destroy')
 const pause = require('connect-pause')
 const is = require('./utils/is')
 const load = require('./utils/load')
-const checkOrGetFreePort = require('./utils/check_port')
 const jsonServer = require('../server')
 
 function prettyPrint(argv, object, rules) {
@@ -104,7 +103,7 @@ module.exports = function (argv) {
     server = undefined
 
     // create db and load object, JSON file, JS or HTTP database
-    return load(source).then(async (db) => {
+    return load(source).then((db) => {
       // Load additional routes
       let routes
       if (argv.routes) {
@@ -125,20 +124,9 @@ module.exports = function (argv) {
       console.log(chalk.gray('  Done'))
 
       // Create app and server
-      const oldPort = argv.port
-
-      const [freePort, portIsUse] = await checkOrGetFreePort(oldPort)
-      argv.port = freePort
       app = createApp(db, routes, middlewares, argv)
       server = app.listen(argv.port, argv.host)
 
-      if (portIsUse) {
-        console.info(
-          chalk.yellowBright(
-            `  Port ${oldPort} already use. Changed port for serve to ${argv.port}`
-          )
-        )
-      }
       // Enhance with a destroy function
       enableDestroy(server)
 
